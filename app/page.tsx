@@ -166,23 +166,38 @@ export default function Home() {
       <section className="py-12 bg-muted/30">
         <div className="container px-4">
           <h2 className="text-2xl font-bold text-center mb-8">
-            Puedo ayudarte con
+            Áreas de derecho disponibles
           </h2>
-          <div className="grid md:grid-cols-3 gap-6 max-w-3xl mx-auto">
+          <div className="grid md:grid-cols-3 gap-4 max-w-4xl mx-auto">
             <FeatureCard
               icon="💼"
-              title="Despidos"
-              description="Me quedaron debiendo, me echaron sin motivo, no me pagaban"
+              title="Laboral"
+              description="Despidos, accidentes, acoso, salaries"
             />
             <FeatureCard
-              icon="🏥"
-              title="Accidentes"
-              description="Me injure en el trabajo, no me quieren reconocer"
+              icon="👨‍👩‍👧"
+              title="Familia"
+              description="Divorcio, tenencia, pension"
             />
             <FeatureCard
-              icon="📄"
-              title="Contratos"
-              description="No me dieron contrato, me pagan en negro"
+              icon="🛒"
+              title="Consumidor"
+              description="Garantias, fraude, deudas"
+            />
+            <FeatureCard
+              icon="🏠"
+              title="Civil"
+              description="Alquileres, contratos, herencias"
+            />
+            <FeatureCard
+              icon="⚖️"
+              title="Penal"
+              description="Denuncias, defensa"
+            />
+            <FeatureCard
+              icon="🏛️"
+              title="Admin"
+              description="Jubilaciones, permisos"
             />
           </div>
         </div>
