@@ -1,28 +1,25 @@
 "use client";
 
-import { useState, useRef, Suspense } from "react";
+import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
 
 interface Message {
   role: "user" | "assistant";
   content: string;
 }
 
-function HeroChat() {
+export default function Home() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    if (!input.trim() || loading) return;
+  async function sendQuery(query: string) {
+    if (!query.trim() || loading) return;
     
-    const userMessage: Message = { role: "user", content: input };
+    const userMessage: Message = { role: "user", content: query };
     setMessages(prev => [...prev, userMessage]);
-    const query = input;
     setInput("");
     setLoading(true);
     
@@ -50,61 +47,11 @@ function HeroChat() {
     }
   }
 
-  return (
-    <div className="bg-card/50 backdrop-blur border rounded-lg p-4 shadow-lg mt-6">
-      <div className="flex flex-col h-[400px]">
-        <div className="flex-1 overflow-y-auto space-y-3 mb-3">
-          {messages.length === 0 ? (
-            <div className="text-center py-4 text-muted-foreground text-sm">
-              <p className="mb-2">⚖️ Escribí tu consulta legal:</p>
-              <p className="text-xs">"Me quedaron debiendo 2 meses desalario"</p>
-              <p className="text-xs">"Trabaje sin contrato y me echaron"</p>
-              <p className="text-xs">"Tuve un accidente en el trabajo"</p>
-            </div>
-          ) : (
-            messages.map((msg, i) => (
-              <div key={i} className={`text-sm ${msg.role === "user" ? "text-right" : "text-left"}`}>
-                <div className={`inline-block p-2 rounded-lg max-w-[90%] ${
-                  msg.role === "user" ? "bg-primary text-primary-foreground" : "bg-muted"
-                }`}>
-                  {msg.content.slice(0, 1000)}{msg.content.length > 1000 ? "..." : ""}
-                </div>
-              </div>
-            ))
-          )}
-          {loading && (
-            <div className="text-left">
-              <div className="bg-muted p-2 rounded-lg inline-flex">
-                <div className="flex gap-1">
-                  <div className="w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce" />
-                  <div className="w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
-                  <div className="w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
-                </div>
-              </div>
-            </div>
-          )}
-          <div ref={messagesEndRef} />
-        </div>
-        
-        <form onSubmit={handleSubmit} className="flex gap-2">
-          <input
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="Escribí tu caso..."
-            className="flex-1 h-10 px-3 rounded-md border bg-background text-sm"
-            disabled={loading}
-          />
-          <Button type="submit" size="sm" disabled={loading || !input.trim()}>
-            {loading ? "..." : "Enviar"}
-          </Button>
-        </form>
-      </div>
-    </div>
-  );
-}
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    sendQuery(input);
+  }
 
-export default function Home() {
   return (
     <div className="min-h-screen">
       {/* Header */}
@@ -139,17 +86,84 @@ export default function Home() {
               <span className="text-primary"> Abierta</span> para Uruguay
             </h1>
             <p className="text-lg text-muted-foreground mb-4">
-              Tu asistente legal con IA. Preguntá sobre despidos, accidentes, contratos.
+              Tu asistente legal con IA. 6 áreas de derecho.
               <span className="block mt-2 text-sm">Gratis y open source.</span>
             </p>
             
-            {/* Chat directo en el hero */}
-            <HeroChat />
+            {/* Quick query buttons */}
+            <div className="flex flex-wrap justify-center gap-2 mb-4">
+              <Button variant="outline" size="sm" onClick={() => sendQuery("Me despidieron sin causa")}>
+                💼 Despido
+              </Button>
+              <Button variant="outline" size="sm" onClick={() => sendQuery("Mi pareja me golpea")}>
+                🏠 Violencia
+              </Button>
+              <Button variant="outline" size="sm" onClick={() => sendQuery("No me pagan el salario")}>
+                💸 Salario
+              </Button>
+              <Button variant="outline" size="sm" onClick={() => sendQuery("Me accidenté en el trabajo")}>
+                🏥 Accidente
+              </Button>
+              <Button variant="outline" size="sm" onClick={() => sendQuery("Quiero divorciarme")}>
+                💔 Divorcio
+              </Button>
+            </div>
+            
+            {/* Chat */}
+            <div className="bg-card/50 backdrop-blur border rounded-lg p-4 shadow-lg mt-4">
+              <div className="flex flex-col h-[350px]">
+                <div className="flex-1 overflow-y-auto space-y-3 mb-3">
+                  {messages.length === 0 ? (
+                    <div className="text-center py-4 text-muted-foreground text-sm">
+                      <p className="mb-2">⚖️ Escribí tu consulta legal:</p>
+                      <p className="text-xs">"Me quedaron debiendo 2 meses"</p>
+                      <p className="text-xs">"Mi landlord me quiere echAR"</p>
+                    </div>
+                  ) : (
+                    messages.map((msg, i) => (
+                      <div key={i} className={`text-sm ${msg.role === "user" ? "text-right" : "text-left"}`}>
+                        <div className={`inline-block p-2 rounded-lg max-w-[90%] ${
+                          msg.role === "user" ? "bg-primary text-primary-foreground" : "bg-muted"
+                        }`}>
+                          {msg.content.slice(0, 1200)}{msg.content.length > 1200 ? "..." : ""}
+                        </div>
+                      </div>
+                    ))
+                  )}
+                  {loading && (
+                    <div className="text-left">
+                      <div className="bg-muted p-2 rounded-lg inline-flex">
+                        <div className="flex gap-1">
+                          <div className="w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce" />
+                          <div className="w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+                          <div className="w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  <div ref={messagesEndRef} />
+                </div>
+                
+                <form onSubmit={handleSubmit} className="flex gap-2">
+                  <input
+                    type="text"
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    placeholder="Escribí tu caso..."
+                    className="flex-1 h-10 px-3 rounded-md border bg-background text-sm"
+                    disabled={loading}
+                  />
+                  <Button type="submit" size="sm" disabled={loading || !input.trim()}>
+                    {loading ? "..." : "Enviar"}
+                  </Button>
+                </form>
+              </div>
+            </div>
             
             <div className="flex flex-wrap justify-center gap-3 mt-6">
               <Link href="/chat">
                 <Button variant="outline" size="sm">
-                  Ver más
+                  Chat completo
                 </Button>
               </Link>
               <a href="https://github.com/doble243/legaltech-uy" target="_blank">
@@ -203,6 +217,37 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Resources */}
+      <section className="py-12">
+        <div className="container px-4">
+          <h2 className="text-2xl font-bold text-center mb-8">
+            Recursos útiles
+          </h2>
+          <div className="grid md:grid-cols-4 gap-4 max-w-4xl mx-auto">
+            <ResourceLink
+              href="https://www.mtss.gub.uy"
+              title="Ministerio de Trabajo"
+              description="Denuncias laborales"
+            />
+            <ResourceLink
+              href="https://www.bps.gub.uy"
+              title="BPS"
+              description="Jubilaciones y pensiones"
+            />
+            <ResourceLink
+              href="https://www.poderjudicial.gub.uy"
+              title="Poder Judicial"
+              description="Consultas de causas"
+            />
+            <ResourceLink
+              href="https://www.defensapublica.gub.uy"
+              title="Defensa Pública"
+              description="Abogado gratuito"
+            />
+          </div>
+        </div>
+      </section>
+
       {/* Footer */}
       <footer className="py-6 border-t">
         <div className="container px-4 text-center text-sm text-muted-foreground">
@@ -223,5 +268,15 @@ function FeatureCard({ icon, title, description }: { icon: string; title: string
       <h3 className="font-semibold mb-1">{title}</h3>
       <p className="text-sm text-muted-foreground">{description}</p>
     </div>
+  );
+}
+
+function ResourceLink({ href, title, description }: { href: string; title: string; description: string }) {
+  return (
+    <a href={href} target="_blank" rel="noopener noreferrer" 
+       className="block p-3 bg-card border rounded-lg hover:border-primary transition-colors">
+      <h3 className="font-semibold text-sm">{title}</h3>
+      <p className="text-xs text-muted-foreground">{description}</p>
+    </a>
   );
 }
