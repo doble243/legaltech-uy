@@ -69,3 +69,31 @@ IMPORTANTE: Te recomiendo que contactes a un abogado laboralista lo antes posibl
 "
 
 IMPORTANTE: Si el usuario pregunta sobre DESPIDO, ACOSO, ACCIDENTE, siempre prioriza dar informacion concreta sobre procedimientos, plazos y donde concurrir.`;
+
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json();
+    const { message } = body;
+
+    if (!message) {
+      return NextResponse.json({ error: "Message is required" }, { status: 400 });
+    }
+
+    const chatCompletion = await groq.chat.completions.create({
+      messages: [
+        { role: "system", content: SYSTEM_PROMPT },
+        { role: "user", content: message },
+      ],
+      model: "llama-3.3-70b-versatile",
+      temperature: 0.5,
+      max_tokens: 1024,
+    });
+
+    const response = chatCompletion.choices[0]?.message?.content || "Disculpa, no pude generar una respuesta. Intentá de nuevo.";
+
+    return NextResponse.json({ message: response });
+  } catch (error) {
+    console.error("Chat API error:", error);
+    return NextResponse.json({ error: "Error interno" }, { status: 500 });
+  }
+}
