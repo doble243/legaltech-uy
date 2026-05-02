@@ -13,21 +13,25 @@ const WELCOME_MESSAGE: Message = {
   role: "assistant",
   content: `⚖️ **Bienvenido a LegalTech UY**
 
-Soy tu asistente de inteligencia artificial especializado en derecho uruguayor.
+Soy tu asistente legal especializado en derecho laboral uruguayor.
 
-Puedo ayudarte con:
+Puedo ayudarte con situaciones como:
 
-• **Consultas jurídicas** - Interpretación de leyes, normativa Uruguaya
-• **Búsqueda de jurisprudencia** - Fallos relevantes para tu caso  
-• **Análisis de contratos** - Revisión y sugerencias
-• **Estrategia legal** - Análisis de casos y opciones procesales
-• **Cálculo de plazos** - Plazos procesales según CPC y Código del Trabajo
+• **Despidos** - Me echaron sin decirme nada, me deben plata, me pagaban en negro
+• **Accidentes de trabajo** - Me injure en el trabajo, no me quieren reconocer
+• **Acoso laboral** - Me hostigan en el trabajo
+• **Contractos irregulares** - No me dieron contrato, me pagan por fuera
+• **Horas extra** - Me hacen trabajar sin pagarme
 
-¿En qué puedo ayudarte hoy?
+**CONTAME TU CASO** - Ejemplo: "Trabaje 1 mes sin contrato y me dejaron en caja"
 
----
+Te explico:
+- Tus derechos
+- El procedimiento legal
+- Los plazos para actuar
+- Donde tenes que ir
 
-*Demo con IA real - Powered by Groq*`
+*Powered by Groq - consulta siempre a un abogado matriculado*`
 };
 
 export default function ChatPage() {

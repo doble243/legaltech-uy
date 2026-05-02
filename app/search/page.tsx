@@ -25,7 +25,7 @@ const demoResults = {
       anno: 2013,
       origen: "Poder Legislativo",
       url: "https://www.impo.com.uy/b/ley-19100",
-      contenido: "Las relaciones contractuales de arrendamiento se regirán por las disposiciones de esta ley...",
+      contenido: "Las relaciones contractuales de arrendamiento se regiran por las disposiciones de esta ley...",
       relevancia: 0.88
     },
     {
@@ -108,7 +108,7 @@ function SearchContent() {
         <input
           type="text"
           name="q"
-          placeholder="Buscar legislação, jurisprudencia..."
+          placeholder="Buscar legislacion, jurisprudencia..."
           className="flex-1 h-12 px-4 rounded-md border bg-background"
           defaultValue={query}
           autoFocus

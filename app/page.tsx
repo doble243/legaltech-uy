@@ -54,7 +54,7 @@ export default function Home() {
                 <input
                   type="text"
                   name="q"
-                  placeholder="Buscar legislação, jurisprudência, fallos..."
+                  placeholder="Buscar legislación, jurisprudencia, fallos..."
                   className="flex-1 h-12 px-4 rounded-md border bg-background"
                   defaultValue=""
                 />
@@ -63,7 +63,7 @@ export default function Home() {
                 </Button>
               </form>
               <p className="text-xs text-muted-foreground mt-2">
-                Ejemplo: "despido injustificado", "régimen de visitas", "contrato de租赁"
+                Ejemplo: "despido injustificado", "régimen de visitas", "contrato de alquiler"
               </p>
             </div>
 
