@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
@@ -14,6 +14,10 @@ export default function Home() {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   async function sendQuery(query: string) {
     if (!query.trim() || loading) return;
@@ -40,7 +44,7 @@ export default function Home() {
     } catch (error) {
       setMessages(prev => [...prev, { 
         role: "assistant", 
-        content: "Tuve un problema al procesar tu consulta. Intentá de nuevo." 
+        content: "⚠️ Tuve un problema. Intentá de nuevo." 
       }]);
     } finally {
       setLoading(false);
@@ -53,24 +57,24 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="border-b">
+      <header className="sticky top-0 z-50 bg-background/95 backdrop-blur border-b">
         <div className="container flex h-16 items-center justify-between px-4">
-          <div className="flex items-center gap-2">
-            <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center shadow-lg shadow-primary/25">
               <span className="text-white font-bold text-sm">LT</span>
             </div>
-            <span className="font-bold text-xl">LegalTech UY</span>
+            <span className="font-bold text-xl tracking-tight">LegalTech UY</span>
           </div>
-          <nav className="hidden md:flex items-center gap-6">
-            <Link href="/search" className="text-sm font-medium hover:text-primary">
+          <nav className="hidden md:flex items-center gap-8">
+            <Link href="/search" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
               Buscador
             </Link>
-            <Link href="/chat" className="text-sm font-medium hover:text-primary">
+            <Link href="/chat" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
               Asistente IA
             </Link>
-            <a href="https://github.com/doble243/legaltech-uy" target="_blank" className="text-sm font-medium hover:text-primary">
+            <a href="https://github.com/doble243/legaltech-uy" target="_blank" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
               GitHub
             </a>
           </nav>
@@ -78,97 +82,81 @@ export default function Home() {
       </header>
 
       {/* Hero */}
-      <section className="py-12 md:py-20">
+      <section className="py-16 md:py-24">
         <div className="container px-4">
-          <div className="max-w-2xl mx-auto text-center">
-            <h1 className="text-3xl md:text-5xl font-bold tracking-tight mb-4">
-              Tecnología Legal
-              <span className="text-primary"> Abierta</span> para Uruguay
-            </h1>
-            <p className="text-lg text-muted-foreground mb-4">
-              Tu asistente legal con IA. 6 áreas de derecho.
-              <span className="block mt-2 text-sm">Gratis y open source.</span>
-            </p>
-            
-            {/* Quick query buttons */}
-            <div className="flex flex-wrap justify-center gap-2 mb-4">
-              <Button variant="outline" size="sm" onClick={() => sendQuery("Me despidieron sin causa")}>
-                💼 Despido
-              </Button>
-              <Button variant="outline" size="sm" onClick={() => sendQuery("Mi pareja me golpea")}>
-                🏠 Violencia
-              </Button>
-              <Button variant="outline" size="sm" onClick={() => sendQuery("No me pagan el salario")}>
-                💸 Salario
-              </Button>
-              <Button variant="outline" size="sm" onClick={() => sendQuery("Me accidenté en el trabajo")}>
-                🏥 Accidente
-              </Button>
-              <Button variant="outline" size="sm" onClick={() => sendQuery("Quiero divorciarme")}>
-                💔 Divorcio
-              </Button>
+          <div className="max-w-3xl mx-auto text-center">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6">
+              <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+              100% Gratis y Open Source
             </div>
             
-            {/* Chat */}
-            <div className="bg-card/50 backdrop-blur border rounded-lg p-4 shadow-lg mt-4">
-              <div className="flex flex-col h-[350px]">
-                <div className="flex-1 overflow-y-auto space-y-3 mb-3">
+            <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">
+              Tu asistente legal con
+              <span className="text-primary"> IA</span>
+            </h1>
+            <p className="text-lg text-muted-foreground mb-8 max-w-xl mx-auto">
+              Consultá sobre despidos, violencia, deudas, divorcios y más. 
+              Respuestas estructuradas con pasos concretos.
+            </p>
+
+            {/* Quick query buttons */}
+            <div className="flex flex-wrap justify-center gap-2 mb-6">
+              <QuickButton onClick={() => sendQuery("Me despidieron sin causa")} icon="💼" label="Despido" />
+              <QuickButton onClick={() => sendQuery("Mi pareja me golpea")} icon="🏠" label="Violencia" />
+              <QuickButton onClick={() => sendQuery("No me pagan el salario")} icon="💸" label="Salario" />
+              <QuickButton onClick={() => sendQuery("Me accidenté en el trabajo")} icon="🏥" label="Accidente" />
+              <QuickButton onClick={() => sendQuery("Quiero divorciarme")} icon="💔" label="Divorcio" />
+            </div>
+            
+            {/* Chat Container */}
+            <div className="bg-card border rounded-2xl shadow-xl shadow-primary/5 overflow-hidden mt-6">
+              <div className="bg-muted/30 px-4 py-3 border-b flex items-center gap-2">
+                <span className="w-3 h-3 rounded-full bg-red-500" />
+                <span className="w-3 h-3 rounded-full bg-yellow-500" />
+                <span className="w-3 h-3 rounded-full bg-green-500" />
+                <span className="ml-2 text-xs text-muted-foreground font-medium">LegalTech UY - Asistente</span>
+              </div>
+              
+              <div className="flex flex-col h-[400px]">
+                <div className="flex-1 overflow-y-auto p-4 space-y-4">
                   {messages.length === 0 ? (
-                    <div className="text-center py-4 text-muted-foreground text-sm">
-                      <p className="mb-2">⚖️ Escribí tu consulta legal:</p>
-                      <p className="text-xs">"Me quedaron debiendo 2 meses"</p>
-                      <p className="text-xs">"Mi landlord me quiere echAR"</p>
-                    </div>
+                    <EmptyState />
                   ) : (
                     messages.map((msg, i) => (
-                      <div key={i} className={`text-sm ${msg.role === "user" ? "text-right" : "text-left"}`}>
-                        <div className={`inline-block p-2 rounded-lg max-w-[90%] ${
-                          msg.role === "user" ? "bg-primary text-primary-foreground" : "bg-muted"
-                        }`}>
-                          {msg.content.slice(0, 1200)}{msg.content.length > 1200 ? "..." : ""}
-                        </div>
-                      </div>
+                      <MessageBubble key={i} message={msg} />
                     ))
                   )}
-                  {loading && (
-                    <div className="text-left">
-                      <div className="bg-muted p-2 rounded-lg inline-flex">
-                        <div className="flex gap-1">
-                          <div className="w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce" />
-                          <div className="w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
-                          <div className="w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
-                        </div>
-                      </div>
-                    </div>
-                  )}
+                  {loading && <TypingIndicator />}
                   <div ref={messagesEndRef} />
                 </div>
                 
-                <form onSubmit={handleSubmit} className="flex gap-2">
-                  <input
-                    type="text"
-                    value={input}
-                    onChange={(e) => setInput(e.target.value)}
-                    placeholder="Escribí tu caso..."
-                    className="flex-1 h-10 px-3 rounded-md border bg-background text-sm"
-                    disabled={loading}
-                  />
-                  <Button type="submit" size="sm" disabled={loading || !input.trim()}>
-                    {loading ? "..." : "Enviar"}
-                  </Button>
+                <form onSubmit={handleSubmit} className="p-4 border-t bg-background/50">
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={input}
+                      onChange={(e) => setInput(e.target.value)}
+                      placeholder="Describí tu caso..."
+                      className="flex-1 h-12 px-4 rounded-xl border bg-background text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+                      disabled={loading}
+                    />
+                    <Button type="submit" size="lg" className="rounded-xl px-6" disabled={loading || !input.trim()}>
+                      {loading ? "..." : "Enviar"}
+                    </Button>
+                  </div>
                 </form>
               </div>
             </div>
             
             <div className="flex flex-wrap justify-center gap-3 mt-6">
               <Link href="/chat">
-                <Button variant="outline" size="sm">
-                  Chat completo
+                <Button variant="outline" size="sm" className="rounded-full">
+                  Abrir chat completo
                 </Button>
               </Link>
               <a href="https://github.com/doble243/legaltech-uy" target="_blank">
-                <Button variant="ghost" size="sm">
-                  GitHub
+                <Button variant="ghost" size="sm" className="rounded-full">
+                  Ver código
                 </Button>
               </a>
             </div>
@@ -177,82 +165,50 @@ export default function Home() {
       </section>
 
       {/* Features */}
-      <section className="py-12 bg-muted/30">
+      <section className="py-16 bg-muted/20">
         <div className="container px-4">
-          <h2 className="text-2xl font-bold text-center mb-8">
-            Áreas de derecho disponibles
+          <h2 className="text-2xl font-bold text-center mb-2">
+            Áreas de derecho
           </h2>
+          <p className="text-center text-muted-foreground mb-8 text-sm">
+            Select the legal area that matches your situation
+          </p>
           <div className="grid md:grid-cols-3 gap-4 max-w-4xl mx-auto">
-            <FeatureCard
-              icon="💼"
-              title="Laboral"
-              description="Despidos, accidentes, acoso, salaries"
-            />
-            <FeatureCard
-              icon="👨‍👩‍👧"
-              title="Familia"
-              description="Divorcio, tenencia, pension"
-            />
-            <FeatureCard
-              icon="🛒"
-              title="Consumidor"
-              description="Garantias, fraude, deudas"
-            />
-            <FeatureCard
-              icon="🏠"
-              title="Civil"
-              description="Alquileres, contratos, herencias"
-            />
-            <FeatureCard
-              icon="⚖️"
-              title="Penal"
-              description="Denuncias, defensa"
-            />
-            <FeatureCard
-              icon="🏛️"
-              title="Admin"
-              description="Jubilaciones, permisos"
-            />
+            <FeatureCard icon="💼" title="Laboral" description="Despidos, accidentes, acoso" />
+            <FeatureCard icon="👨‍👩‍👧" title="Familia" description="Divorcio, tenencia, pensión" />
+            <FeatureCard icon="🛒" title="Consumidor" description="Garantías, fraude, deudas" />
+            <FeatureCard icon="🏠" title="Civil" description="Alquileres, contratos" />
+            <FeatureCard icon="⚖️" title="Penal" description="Denuncias, defensa" />
+            <FeatureCard icon="🏛️" title="Admin" description="Jubilaciones, permisos" />
           </div>
         </div>
       </section>
 
       {/* Resources */}
-      <section className="py-12">
+      <section className="py-16">
         <div className="container px-4">
-          <h2 className="text-2xl font-bold text-center mb-8">
+          <h2 className="text-2xl font-bold text-center mb-2">
             Recursos útiles
           </h2>
+          <p className="text-center text-muted-foreground mb-8 text-sm">
+            Official institutions and support services
+          </p>
           <div className="grid md:grid-cols-4 gap-4 max-w-4xl mx-auto">
-            <ResourceLink
-              href="https://www.mtss.gub.uy"
-              title="Ministerio de Trabajo"
-              description="Denuncias laborales"
-            />
-            <ResourceLink
-              href="https://www.bps.gub.uy"
-              title="BPS"
-              description="Jubilaciones y pensiones"
-            />
-            <ResourceLink
-              href="https://www.poderjudicial.gub.uy"
-              title="Poder Judicial"
-              description="Consultas de causas"
-            />
-            <ResourceLink
-              href="https://www.defensapublica.gub.uy"
-              title="Defensa Pública"
-              description="Abogado gratuito"
-            />
+            <ResourceLink href="https://www.mtss.gub.uy" title="Ministerio de Trabajo" description="Denuncias laborales" />
+            <ResourceLink href="https://www.bps.gub.uy" title="BPS" description="Jubilaciones" />
+            <ResourceLink href="https://www.poderjudicial.gub.uy" title="Poder Judicial" description="Consultas" />
+            <ResourceLink href="https://www.defensapublica.gub.uy" title="Defensa Pública" description="Abogado gratis" />
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="py-6 border-t">
-        <div className="container px-4 text-center text-sm text-muted-foreground">
-          <p>100% Open Source • MIT License</p>
-          <a href="https://github.com/doble243/legaltech-uy" className="hover:underline">
+      <footer className="py-8 border-t bg-muted/10">
+        <div className="container px-4 text-center">
+          <p className="text-sm text-muted-foreground mb-2">
+            LegalTech UY • 100% Open Source • MIT License
+          </p>
+          <a href="https://github.com/doble243/legaltech-uy" className="text-sm text-primary hover:underline">
             github.com/doble243/legaltech-uy
           </a>
         </div>
@@ -261,11 +217,180 @@ export default function Home() {
   );
 }
 
+function QuickButton({ onClick, icon, label }: { onClick: () => void; icon: string; label: string }) {
+  return (
+    <button
+      onClick={onClick}
+      className="inline-flex items-center gap-2 px-4 py-2 rounded-full border bg-background hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-200 text-sm font-medium"
+    >
+      <span>{icon}</span>
+      {label}
+    </button>
+  );
+}
+
+function EmptyState() {
+  return (
+    <div className="text-center py-8">
+      <div className="text-4xl mb-4">⚖️</div>
+      <p className="text-muted-foreground mb-2">Describe tu situación legal</p>
+      <p className="text-sm text-muted-foreground/60">Ej: "Me deben 2 meses de salary"</p>
+    </div>
+  );
+}
+
+function MessageBubble({ message }: { message: Message }) {
+  const isUser = message.role === "user";
+  
+  if (isUser) {
+    return (
+      <div className="flex justify-end">
+        <div className="bg-primary text-primary-foreground px-4 py-3 rounded-2xl rounded-br-md max-w-[85%] text-sm">
+          {message.content}
+        </div>
+      </div>
+    );
+  }
+
+  // Parse structured response
+  const lines = message.content.split('\n');
+  const sections: Record<string, string[]> = {
+    RESUMEN: [],
+    DERECHOS: [],
+    PASOS: [],
+    DONDE: [],
+    DOCUMENTACION: [],
+    PLAZO: [],
+    IMPORTANTE: [],
+  };
+  let currentSection = '';
+  
+  lines.forEach(line => {
+    if (line.match(/^##\s*📋\s*RESUMEN/i)) {
+      currentSection = 'RESUMEN';
+    } else if (line.match(/^##\s*⚠️\s*DERECHOS/i)) {
+      currentSection = 'DERECHOS';
+    } else if (line.match(/^##\s*📌\s*PASOS/i)) {
+      currentSection = 'PASOS';
+    } else if (line.match(/^##\s*🏛️\s*DONDE/i)) {
+      currentSection = 'DONDE';
+    } else if (line.match(/^##\s*📄\s*DOCUMENT/i)) {
+      currentSection = 'DOCUMENTACION';
+    } else if (line.match(/^##\s*⏰\s*PLAZO/i)) {
+      currentSection = 'PLAZO';
+    } else if (line.match(/^##\s*💰\s*CUANTO/i)) {
+      currentSection = 'MONTO';
+    } else if (line.match(/^##\s*⚠️\s*IMPORTANTE/i)) {
+      currentSection = 'IMPORTANTE';
+    } else if (line.trim() && currentSection) {
+      if (currentSection === 'RESUMEN') {
+        sections.RESUMEN.push(line);
+      } else if (line.match(/^[-*•]\s*/)) {
+        sections[currentSection].push(line.replace(/^[-*•]\s*/, ''));
+      } else {
+        sections[currentSection].push(line);
+      }
+    }
+  });
+
+  return (
+    <div className="bg-muted/50 rounded-2xl rounded-bl-md p-4 max-w-[95%] text-sm">
+      {/* RESUMEN */}
+      {sections.RESUMEN.length > 0 && (
+        <div className="mb-4 pb-3 border-b">
+          <h4 className="text-xs font-semibold text-primary uppercase tracking-wider mb-2">Resumen</h4>
+          <p className="text-muted-foreground">{sections.RESUMEN.join(' ')}</p>
+        </div>
+      )}
+      
+      {/* DERECHOS */}
+      {sections.DERECHOS.length > 0 && (
+        <div className="mb-3">
+          <h4 className="text-xs font-semibold text-green-600 uppercase tracking-wider mb-1">Tus derechos</h4>
+          <ul className="space-y-1">
+            {sections.DERECHOS.map((item, i) => (
+              <li key={i} className="flex items-start gap-2">
+                <span className="text-green-500 mt-0.5">✓</span>
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+      
+      {/* PASOS */}
+      {sections.PASOS.length > 0 && (
+        <div className="mb-3">
+          <h4 className="text-xs font-semibold text-blue-600 uppercase tracking-wider mb-1">Pasos a seguir</h4>
+          <ol className="space-y-1 list-decimal list-inside">
+            {sections.PASOS.map((item, i) => (
+              <li key={i} className="pl-1">{item}</li>
+            ))}
+          </ol>
+        </div>
+      )}
+      
+      {/* DONDE */}
+      {sections.DONDE.length > 0 && (
+        <div className="mb-3">
+          <h4 className="text-xs font-semibold text-purple-600 uppercase tracking-wider mb-1">Dónde ir</h4>
+          <p className="text-muted-foreground">{sections.DONDE.join(' ')}</p>
+        </div>
+      )}
+      
+      {/* DOCUMENTACION */}
+      {sections.DOCUMENTACION.length > 0 && (
+        <div className="mb-3">
+          <h4 className="text-xs font-semibold text-orange-600 uppercase tracking-wider mb-1">Documentación</h4>
+          <ul className="space-y-1">
+            {sections.DOCUMENTACION.map((item, i) => (
+              <li key={i} className="flex items-start gap-2">
+                <span className="text-orange-500">📄</span>
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+      
+      {/* PLAZO */}
+      {sections.PLAZO.length > 0 && (
+        <div className="mb-3 p-2 bg-red-50 rounded-lg">
+          <h4 className="text-xs font-semibold text-red-600 uppercase tracking-wider mb-0.5">Plazo</h4>
+          <p className="text-red-700 font-medium">{sections.PLAZO.join(' ')}</p>
+        </div>
+      )}
+      
+      {/* IMPORTANTE */}
+      {sections.IMPORTANTE.length > 0 && (
+        <div className="mt-3 p-3 bg-amber-50 border border-amber-200 rounded-lg">
+          <h4 className="text-xs font-semibold text-amber-700 uppercase tracking-wider mb-1">Importante</h4>
+          <p className="text-amber-800 text-xs">{sections.IMPORTANTE.join(' ')}</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function TypingIndicator() {
+  return (
+    <div className="flex justify-start">
+      <div className="bg-muted/50 px-4 py-3 rounded-2xl rounded-bl-md">
+        <div className="flex gap-1">
+          <div className="w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce" />
+          <div className="w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+          <div className="w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function FeatureCard({ icon, title, description }: { icon: string; title: string; description: string }) {
   return (
-    <div className="p-4 bg-card border rounded-lg text-center">
+    <div className="p-5 bg-card border rounded-xl text-center hover:shadow-lg hover:border-primary/50 transition-all duration-200">
       <div className="text-2xl mb-2">{icon}</div>
-      <h3 className="font-semibold mb-1">{title}</h3>
+      <h3 className="font-semibold text-foreground">{title}</h3>
       <p className="text-sm text-muted-foreground">{description}</p>
     </div>
   );
@@ -274,9 +399,9 @@ function FeatureCard({ icon, title, description }: { icon: string; title: string
 function ResourceLink({ href, title, description }: { href: string; title: string; description: string }) {
   return (
     <a href={href} target="_blank" rel="noopener noreferrer" 
-       className="block p-3 bg-card border rounded-lg hover:border-primary transition-colors">
-      <h3 className="font-semibold text-sm">{title}</h3>
-      <p className="text-xs text-muted-foreground">{description}</p>
+       className="block p-4 bg-card border rounded-xl hover:shadow-md hover:border-primary/50 transition-all duration-200">
+      <h3 className="font-semibold text-foreground">{title}</h3>
+      <p className="text-sm text-muted-foreground">{description}</p>
     </a>
   );
 }
