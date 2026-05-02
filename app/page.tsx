@@ -52,7 +52,7 @@ function HeroChat() {
 
   return (
     <div className="bg-card/50 backdrop-blur border rounded-lg p-4 shadow-lg mt-6">
-      <div className="flex flex-col h-[300px]">
+      <div className="flex flex-col h-[400px]">
         <div className="flex-1 overflow-y-auto space-y-3 mb-3">
           {messages.length === 0 ? (
             <div className="text-center py-4 text-muted-foreground text-sm">
@@ -67,7 +67,7 @@ function HeroChat() {
                 <div className={`inline-block p-2 rounded-lg max-w-[90%] ${
                   msg.role === "user" ? "bg-primary text-primary-foreground" : "bg-muted"
                 }`}>
-                  {msg.content.slice(0, 500)}{msg.content.length > 500 ? "..." : ""}
+                  {msg.content.slice(0, 1000)}{msg.content.length > 1000 ? "..." : ""}
                 </div>
               </div>
             ))

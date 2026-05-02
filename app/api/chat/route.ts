@@ -86,7 +86,7 @@ export async function POST(request: NextRequest) {
       ],
       model: "llama-3.3-70b-versatile",
       temperature: 0.5,
-      max_tokens: 1024,
+      max_tokens: 2048,
     });
 
     const response = chatCompletion.choices[0]?.message?.content || "Disculpa, no pude generar una respuesta. Intentá de nuevo.";
